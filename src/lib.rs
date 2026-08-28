@@ -21,7 +21,7 @@
 
 use core::iter::FusedIterator;
 use core::slice;
-use core::str::{from_utf8_unchecked, Lines};
+use core::str::{Lines, from_utf8_unchecked};
 
 /// Trait extending [`str`] with [`paragraphs`].
 ///
@@ -77,7 +77,7 @@ pub trait SplitParagraphs {
     ///
     /// [`paragraphs`]: SplitParagraphs::paragraphs
     /// [`lines`]: str::lines
-    fn paragraphs(&self) -> Paragraphs;
+    fn paragraphs(&self) -> Paragraphs<'_>;
 }
 
 /// An iterator over the paragraphs of a string, as string slices.
@@ -95,7 +95,7 @@ pub struct Paragraphs<'a> {
 
 impl SplitParagraphs for str {
     #[inline]
-    fn paragraphs(&self) -> Paragraphs {
+    fn paragraphs(&self) -> Paragraphs<'_> {
         Paragraphs {
             lines: self.lines(),
         }
@@ -107,7 +107,7 @@ impl<'a> Iterator for Paragraphs<'a> {
 
     #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
-        (0, self.lines.size_hint().1.map(|n| (n + 1) / 2))
+        (0, self.lines.size_hint().1.map(|n| n.div_ceil(2)))
     }
 
     #[inline]
@@ -126,16 +126,15 @@ impl<'a> Iterator for Paragraphs<'a> {
         };
 
         let mut last_non_empty_line = first_non_empty_line;
-        loop {
-            let Some(line) = self.lines.next() else {
-                break;
-            };
+        for line in self.lines.by_ref() {
             if line.trim().is_empty() {
                 break;
             }
             last_non_empty_line = line;
         }
 
+        // SAFETY: Both lines are ordered slices of the same input string, and line
+        // boundaries are UTF-8 boundaries, so the contiguous span is valid UTF-8.
         let result: &str = unsafe {
             from_utf8_unchecked(slice::from_raw_parts(
                 first_non_empty_line.as_ptr(),
@@ -167,16 +166,15 @@ impl DoubleEndedIterator for Paragraphs<'_> {
         };
 
         let mut first_non_empty_line = last_non_empty_line;
-        loop {
-            let Some(line) = self.lines.next_back() else {
-                break;
-            };
+        while let Some(line) = self.lines.next_back() {
             if line.trim().is_empty() {
                 break;
             }
             first_non_empty_line = line;
         }
 
+        // SAFETY: Both lines are ordered slices of the same input string, and line
+        // boundaries are UTF-8 boundaries, so the contiguous span is valid UTF-8.
         let result: &str = unsafe {
             from_utf8_unchecked(slice::from_raw_parts(
                 first_non_empty_line.as_ptr(),

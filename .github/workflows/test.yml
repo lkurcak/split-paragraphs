@@ -17,6 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         rust:
+          - "1.85"
           - stable
     steps:
       - uses: actions/checkout@v7
@@ -28,4 +29,3 @@ jobs:
       - run: cargo test --no-default-features --verbose
       - run: cargo build --no-default-features --verbose --release
       - run: cargo test --no-default-features --verbose --release
-

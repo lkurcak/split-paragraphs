@@ -2,8 +2,9 @@
 authors = ["Ľubomír Kurčák <lubomirkurcak@gmail.com>"]
 name = "split-paragraphs"
 description = "Iterator over paragraphs of a string."
-version = "0.2.0"
-edition = "2021"
+version = "1.0.0"
+edition = "2024"
+rust-version = "1.85"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/lubomirkurcak/split-paragraphs"
 categories = [

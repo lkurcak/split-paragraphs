@@ -167,9 +167,7 @@ fn test_consistency_with_lines() {
         let lines1: Vec<&str> = text.paragraphs().flat_map(|p| p.lines()).collect();
         let lines2: Vec<&str> = text.lines().filter(|l| !l.trim().is_empty()).collect();
 
-        for (l1, l2) in lines1.iter().zip(lines2.iter()) {
-            assert_eq!(l1, l2);
-        }
+        assert_eq!(lines1, lines2);
     }
 }
 

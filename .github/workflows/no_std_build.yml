@@ -17,6 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         rust:
+          - "1.85"
           - stable
         target:
           - thumbv7em-none-eabi
