@@ -15,4 +15,4 @@ jobs:
   ci:
     uses: lkurcak/forge/.github/workflows/rust-ci.yml@v1
     with:
-      check-targets: thumbv7em-none-eabi wasm32-unknown-unknown
+      no-std: true
