@@ -15,3 +15,6 @@ categories = [
     "no-std::no-alloc",
 ]
 keywords = ["paragraphs", "split", "iterator", "no-std", "no-alloc"]
+
+[lints.clippy]
+mod_module_files = "warn"
