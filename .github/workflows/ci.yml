@@ -16,3 +16,4 @@ jobs:
     uses: lkurcak/forge/.github/workflows/rust-ci.yml@v1
     with:
       no-std: true
+      msrv: true
